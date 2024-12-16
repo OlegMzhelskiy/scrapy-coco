@@ -1,0 +1,13 @@
+tg_token: "1111111:JKSDHFjfwefjOL_sdlkjfJKLSHDFc"
+
+debug_bot: true
+log_level: DEBUG
+
+retry_count: 1
+scraping_interval: "1m"
+
+admin_chat_id: 111
+chat_ids: [111, 222]
+
+event_name: "pilates strength"
+url_event_source: "http://ohiameditation.com/group-classes"

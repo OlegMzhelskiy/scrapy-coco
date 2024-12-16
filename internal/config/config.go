@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	Token            string        `mapstructure:"token"`
+	Token            string        `mapstructure:"tg_token"`
 	DebugBot         bool          `mapstructure:"debug_bot"`
 	LogLevel         string        `mapstructure:"log_level"`
 	StoreType        string        `mapstructure:"store_type"`
@@ -31,7 +31,7 @@ func LoadConfig(configPath string) (Config, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("")
 
-	err := viper.BindEnv("token") // TOKEN
+	err := viper.BindEnv("tg_token") // TG_TOKEN
 	if err != nil {
 		log.Fatal(err)
 	}
