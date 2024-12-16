@@ -15,14 +15,15 @@ func main() {
 	}
 
 	log.InitLogger(cfg.LogLevel)
-	l := log.GetLogger()
+
+	log.GetLogger().Infof("config=%+v", cfg)
 
 	a, err := app.NewApp("", cfg)
 	if err != nil {
-		l.Fatal(err)
+		log.GetLogger().Fatal(err)
 	}
 
 	if err = a.Run(); err != nil {
-		l.Fatal(err)
+		log.GetLogger().Fatal(err)
 	}
 }
