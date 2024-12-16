@@ -38,6 +38,10 @@ func NewApp(token string, cfg config.Config) (*App, error) {
 		return nil, fmt.Errorf("token shouldn't be empty")
 	}
 
+	if cfg.AdminChatID == 0 {
+		return nil, fmt.Errorf("admin_chat_id shouldn't be empty")
+	}
+
 	bot, err := tgbot.NewBot(token, cfg)
 	if err != nil {
 		return nil, err
