@@ -1,0 +1,31 @@
+# .golangci.yml
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - gosimple
+    - unused
+    - errcheck
+    - gocyclo
+    - gofmt
+    - misspell
+    - gocritic
+    - goimports
+    - nestif
+
+  disable:
+    - godox # Отключение поиска
+
+issues:
+  exclude-rules:
+    - linters:
+        - gocyclo
+      text: "function is too complex"
+
+  max-same-issues: 3
+  max-issues-per-linter: 10
+  exclude-use-default: false

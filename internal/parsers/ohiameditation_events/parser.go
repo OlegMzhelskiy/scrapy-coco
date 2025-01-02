@@ -6,10 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
-	"github.com/chromedp/chromedp"
 	"scraper_nike/internal/log"
 	"scraper_nike/internal/models"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/chromedp/chromedp"
 )
 
 type Parser struct {
@@ -83,7 +84,9 @@ func (p Parser) Parse() ([]models.Event, error) {
 
 						param := fmt.Sprintf("Дата: %s, Время: %s, Класс: %s, Инструктор: %s, Дополнительно: %s, Описание: %s, URL: %s",
 							eventDay, eventTime, title, instructor, meta, description, dataUrl)
-						str := strings.Replace(strings.Replace(param, "\n", "", -1), "  ", "", -1)
+
+						str := strings.ReplaceAll(strings.ReplaceAll(param, "\n", ""), "  ", "")
+
 						log.GetLogger().Infof(" %s\n", str)
 					}
 				})
@@ -93,5 +96,5 @@ func (p Parser) Parse() ([]models.Event, error) {
 }
 
 func prepareText(str string) string {
-	return strings.Replace(strings.Replace(str, "\n", "", -1), "  ", "", -1)
+	return strings.ReplaceAll(strings.ReplaceAll(str, "\n", ""), "  ", "")
 }

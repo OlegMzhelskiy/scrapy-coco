@@ -17,6 +17,10 @@ type ParseWorker interface {
 	Run() error
 }
 
+type MessageSender interface {
+	SendMessageToAdmin(text string) error
+}
+
 type App struct {
 	done             chan struct{}
 	tgBot            *tgbot.TgBot
@@ -27,6 +31,7 @@ type App struct {
 	AdminChatID      int64
 	EventName        string
 	parseWorker      ParseWorker
+	messageSender    MessageSender
 }
 
 func NewApp(token string, cfg config.Config) (*App, error) {
@@ -64,6 +69,7 @@ func NewApp(token string, cfg config.Config) (*App, error) {
 			message_sender.New(bot, cfg.ChatIDs, cfg.RetryCount),
 			store.NewMemoryStore(),
 			events.New(cfg.URLEventSource, cfg.EventName)),
+		messageSender: bot,
 	}
 
 	return a, nil
@@ -71,6 +77,12 @@ func NewApp(token string, cfg config.Config) (*App, error) {
 
 func (a App) Run() error {
 	log.GetLogger().Infof("start bot %s\n", a.tgBot.BotName)
+
+	if err := a.messageSender.SendMessageToAdmin("bot is successfully started"); err != nil {
+		log.GetLogger().Errorf("failed to send message to admin: %s", err)
+
+		return err
+	}
 
 	go a.tgBot.GetUpdateMessage()
 

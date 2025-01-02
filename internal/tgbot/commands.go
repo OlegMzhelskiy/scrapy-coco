@@ -3,14 +3,16 @@ package tgbot
 import (
 	"fmt"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"scraper_nike/internal/log"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 const (
-	StartCommandText   = "Hi! 🙂\nI am a bot %s"
-	HelpCommandText    = "I'm just forwarding messages to my master"
-	UnknownCommandText = "Unknown command"
+	StartCommandText    = "Hi! 🙂\nI am a bot %s"
+	HelpCommandText     = "I'm just forwarding messages to my master"
+	SettingsCommandText = "The bot has no settings"
+	UnknownCommandText  = "Unknown command"
 )
 
 func (b TgBot) processCommand(message *tgbotapi.Message) {
@@ -27,6 +29,9 @@ func (b TgBot) processCommand(message *tgbotapi.Message) {
 		_, err = b.Send(msg)
 	case "help":
 		msg := tgbotapi.NewMessage(ChatID, HelpCommandText)
+		_, err = b.Send(msg)
+	case "settings":
+		msg := tgbotapi.NewMessage(ChatID, SettingsCommandText)
 		_, err = b.Send(msg)
 	default:
 		msg := tgbotapi.NewMessage(ChatID, UnknownCommandText)

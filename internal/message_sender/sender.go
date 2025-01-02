@@ -5,19 +5,19 @@ import (
 	"fmt"
 )
 
-type Transporter interface {
-	SendTextMessageWithRetry(Text string, ChatID int64, MessageID int, retryCount int) error
+type transporter interface {
+	SendTextMessageWithRetry(text string, chatID int64, amessageID int, retryCount int) error
 }
 
 type MessageSender struct {
-	transporter Transporter //tg
+	transporter transporter // tg
 	chatIDs     []int64
 	retryCount  int
 }
 
-func New(transp Transporter, chatIDs []int64, retryCount int) MessageSender {
+func New(transporter transporter, chatIDs []int64, retryCount int) MessageSender {
 	return MessageSender{
-		transporter: transp,
+		transporter: transporter,
 		chatIDs:     chatIDs,
 		retryCount:  retryCount,
 	}
@@ -40,9 +40,9 @@ func (m MessageSender) Send(message string, messageID int) error {
 	return nil
 }
 
-func (m MessageSender) sendMessage(Text string, ChatID int64, MessageID int) error {
-	if err := m.transporter.SendTextMessageWithRetry(Text, ChatID, MessageID, m.retryCount); err != nil {
-		return fmt.Errorf("can't send message to chat id %v: %s", ChatID, err)
+func (m MessageSender) sendMessage(text string, chatID int64, messageID int) error {
+	if err := m.transporter.SendTextMessageWithRetry(text, chatID, messageID, m.retryCount); err != nil {
+		return fmt.Errorf("can't send message to chat id %v: %s", chatID, err)
 	}
 
 	return nil

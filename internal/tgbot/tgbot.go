@@ -3,9 +3,10 @@ package tgbot
 import (
 	"fmt"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"scraper_nike/internal/config"
 	"scraper_nike/internal/log"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type TgBot struct {
