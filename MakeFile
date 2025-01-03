@@ -1,0 +1,27 @@
+IMAGE_NAME=scraper-nike
+CONTAINER_NAME=scraper-nike-container
+PORT=8081
+
+.PHONY: compose-run
+compose-run:
+	docker-compose up --build
+
+.PHONY: build
+build:
+	docker build -t $(IMAGE_NAME):latest .
+
+.PHONY: build-run
+build-run: build remove
+	docker run -d --name $(CONTAINER_NAME) -p $(PORT):8080 $(IMAGE_NAME)
+
+.PHONY: run
+run: remove
+	docker run -d --name $(CONTAINER_NAME) -p $(PORT):8080 $(IMAGE_NAME)
+
+.PHONY: stop
+stop:
+	docker stop $(CONTAINER_NAME)
+
+.PHONY: remove
+remove:
+	docker rm $(CONTAINER_NAME)
