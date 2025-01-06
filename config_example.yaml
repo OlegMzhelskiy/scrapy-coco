@@ -11,3 +11,5 @@ chat_ids: [111, 222]
 
 event_name: "pilates strength"
 url_event_source: "http://ohiameditation.com/group-classes"
+
+database_url: "postgresql://root:123@localhost:26257/mydb?sslmode=disable" # cockroachdb

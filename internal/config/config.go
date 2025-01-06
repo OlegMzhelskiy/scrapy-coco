@@ -20,6 +20,16 @@ type Config struct {
 	AdminChatID      int64         `mapstructure:"admin_chat_id"`
 	EventName        string        `mapstructure:"event_name"`
 	URLEventSource   string        `mapstructure:"url_event_source"`
+	DatabaseURL      string        `mapstructure:"database_url"`
+	DB               db
+}
+
+type db struct {
+	DBHost     string `mapstructure:"db_host"`
+	DBPort     string `mapstructure:"db_port"`
+	DBName     string `mapstructure:"db_name"`
+	DBUser     string `mapstructure:"db_user"`
+	DBPassword string `mapstructure:"db_password"`
 }
 
 func LoadConfig(configPath string) (Config, error) {
@@ -31,6 +41,30 @@ func LoadConfig(configPath string) (Config, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("")
 
+	bindEnvs()
+
+	viper.SetDefault("scraping_interval", "1m")
+	viper.SetDefault("retry_count", 1)
+	viper.SetDefault("log_level", "DEBUG")
+	viper.SetDefault("debug_bot", true)
+
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			log.Error("config file not found, falling back to environment variables", err)
+		} else {
+			log.Error("error reading config file", err)
+		}
+	}
+
+	var config Config
+	if err := viper.Unmarshal(&config); err != nil {
+		return config, fmt.Errorf("unable to decode config into struct: %w", err)
+	}
+
+	return config, nil
+}
+
+func bindEnvs() {
 	err := viper.BindEnv("tg_token") // TG_TOKEN
 	if err != nil {
 		log.Fatal(err)
@@ -56,23 +90,8 @@ func LoadConfig(configPath string) (Config, error) {
 		log.Fatal(err)
 	}
 
-	viper.SetDefault("scraping_interval", "1m")
-	viper.SetDefault("retry_count", 1)
-	viper.SetDefault("log_level", "DEBUG")
-	viper.SetDefault("debug_bot", true)
-
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Error("config file not found, falling back to environment variables", err)
-		} else {
-			log.Error("error reading config file", err)
-		}
+	err = viper.BindEnv("database_url") // DATABASE_URL
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	var config Config
-	if err := viper.Unmarshal(&config); err != nil {
-		return config, fmt.Errorf("unable to decode config into struct: %w", err)
-	}
-
-	return config, nil
 }

@@ -6,7 +6,8 @@ import (
 
 	"scraper_nike/internal/log"
 	"scraper_nike/internal/models"
-	"scraper_nike/internal/store"
+
+	eventsdb "scraper_nike/internal/store/events"
 )
 
 type MessageSender interface {
@@ -71,7 +72,7 @@ func (w ParseWorker) startParse() error {
 			continue // skip events already sent
 		}
 
-		if !errors.Is(err, store.ErrNotFound) {
+		if !errors.Is(err, eventsdb.ErrNotFound) {
 			log.GetLogger().Errorf("failed to get event from store: %s", err)
 		}
 
