@@ -10,6 +10,7 @@ const queryCreateTableMessages = `CREATE TABLE IF NOT EXISTS messages (
     user_name VARCHAR(255),
     from_id INT,
     reply_message_id INT,
+    bot_message_id INT,
     PRIMARY KEY (id)
 );`
 

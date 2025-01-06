@@ -12,9 +12,4 @@ chat_ids: [111, 222]
 event_name: "pilates strength"
 url_event_source: "http://ohiameditation.com/group-classes"
 
-db:
-  db_host: "localhost"
-  db_port: 26257
-  db_name: "mydb"
-  db_user: "totoro"
-  db_password: ""
+database_url: "postgresql://root:123@localhost:26257/mydb?sslmode=disable" # cockroachdb

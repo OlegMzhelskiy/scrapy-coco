@@ -11,7 +11,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const megTemplate = `[%s]%s
+const megTemplate = `[%s]
 From: %s %s (%d)
 UserName: %s
 Message: %s`
@@ -27,43 +27,49 @@ func (b TgBot) GetUpdateMessage() {
 }
 
 func (b TgBot) processMessage(ctx context.Context, update tgbotapi.Update) {
-	if update.Message != nil {
-		if !b.IsMessageToMe(*update.Message) && update.Message.Chat.Type != "private" {
-			return
-		}
+	if update.Message == nil {
+		return
+	}
 
-		message := update.Message
-		msg := messageFromTg(message)
+	if !b.IsMessageToMe(*update.Message) && update.Message.Chat.Type != "private" {
+		return
+	}
 
-		log.GetLogger().Infof("username: %s ID: %v text: %s", msg.UserName, msg.FromID, msg.Text)
+	message := update.Message
+	msg := messageFromTg(message)
 
-		var warning string
+	log.GetLogger().Infof("username: %s ID: %v text: %s", msg.UserName, msg.FromID, msg.Text)
+
+	if message.IsCommand() {
+		b.processCommand(message)
 
 		if err := b.messageStore.SaveMessage(ctx, msg); err != nil {
-			warning = "‼️"
 			log.GetLogger().Errorf("failed to save message to db: %s", err)
 		}
 
-		if message.IsCommand() {
-			b.processCommand(message)
-
-			return
-		}
-
-		text := fmt.Sprintf(megTemplate, msg.Date, warning, msg.FirstName,
-			msg.LastName, msg.FromID, msg.UserName, msg.Text)
-
-		textMsg := tgbotapi.NewMessage(b.adminChatID, text)
-
-		sentMessage, err := b.Send(textMsg)
-		if err != nil {
-			log.GetLogger().Errorf("failed to send message: %s", err)
-
-			return
-		}
-
-		log.GetLogger().Infof("returned message: %s", sentMessage)
+		return
 	}
+
+	text := fmt.Sprintf(megTemplate, msg.Date, msg.FirstName,
+		msg.LastName, msg.FromID, msg.UserName, msg.Text)
+
+	textMsg := tgbotapi.NewMessage(b.adminChatID, text)
+
+	sentMessage, err := b.Send(textMsg)
+	if err != nil {
+		log.GetLogger().Errorf("failed to send message: %s", err)
+
+		return
+	}
+
+	msg.BotMessageID = &sentMessage.MessageID
+
+	if err = b.messageStore.SaveMessage(ctx, msg); err != nil {
+		log.GetLogger().Errorf("failed to save message to db: %s", err)
+	}
+
+	log.GetLogger().Infof("returned message: %s", sentMessage)
+
 }
 
 func messageFromTg(message *tgbotapi.Message) models.TgMessage {

@@ -12,4 +12,5 @@ type TgMessage struct {
 	UserName         string    `db:"user_name"`
 	FromID           int       `db:"from_id"`
 	ReplyToMessageID int       `db:"reply_message_id"`
+	BotMessageID     *int      `db:"bot_message_id"`
 }

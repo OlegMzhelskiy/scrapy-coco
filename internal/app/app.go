@@ -113,13 +113,7 @@ func (a App) Run() error {
 }
 
 func initBDConn(cfg config.Config) (*sqlx.DB, error) {
-	pgConnString := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable",
-		cfg.DB.DBUser,
-		cfg.DB.DBPassword,
-		cfg.DB.DBHost,
-		cfg.DB.DBPort,
-		cfg.DB.DBName,
-	)
+	pgConnString := cfg.DatabaseURL
 
 	var (
 		db  *sqlx.DB

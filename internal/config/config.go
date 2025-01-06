@@ -20,6 +20,7 @@ type Config struct {
 	AdminChatID      int64         `mapstructure:"admin_chat_id"`
 	EventName        string        `mapstructure:"event_name"`
 	URLEventSource   string        `mapstructure:"url_event_source"`
+	DatabaseURL      string        `mapstructure:"database_url"`
 	DB               db
 }
 
@@ -89,29 +90,8 @@ func bindEnvs() {
 		log.Fatal(err)
 	}
 
-	err = viper.BindEnv("db_host")
+	err = viper.BindEnv("database_url") // DATABASE_URL
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	err = viper.BindEnv("db_port")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = viper.BindEnv("db_name")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = viper.BindEnv("db_user")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = viper.BindEnv("db_password")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 }

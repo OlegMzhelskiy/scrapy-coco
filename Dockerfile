@@ -1,11 +1,12 @@
-ARG GO_VERSION=1.22
-FROM golang:1.22 AS builder
+FROM golang:1.23 AS builder
 WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download -x
 
 COPY . .
+
+RUN go mod tidy
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /bin/server .
 
