@@ -23,7 +23,9 @@ RUN --mount=type=cache,target=/var/cache/apk \
         update-ca-certificates
 
 COPY --from=builder /bin/server /bin/
-COPY config.yaml /config.yaml
+
+#COPY config.yaml /config.yaml
+ADD config.yaml* /config.yaml
 
 EXPOSE 8080
 
